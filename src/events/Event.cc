@@ -74,7 +74,7 @@ bool operator==(const Event& x, const Event& y)
 			const auto& a = a_.getSdlWindowEvent();
 			const auto& b = b_.getSdlWindowEvent();
 			// don't compare timestamp
-			if (a.event != b.event) return false;
+			if (a.type != b.type) return false;
 			if (a.windowID != b.windowID) return false;
 			// TODO for specific events, compare data1 and data2
 			return true;
@@ -169,9 +169,9 @@ TclObject toTclList(const Event& event)
 		},
 		[](const WindowEvent& e_) {
 			const auto& e = e_.getSdlWindowEvent();
-			if (e.event == SDL_EVENT_WINDOW_FOCUS_GAINED) {
+			if (e.type == SDL_EVENT_WINDOW_FOCUS_GAINED) {
 				return makeTclList("focus", true);
-			} else if (e.event == SDL_EVENT_WINDOW_FOCUS_LOST) {
+			} else if (e.type == SDL_EVENT_WINDOW_FOCUS_LOST) {
 				return makeTclList("focus", false);
 			}
 			return makeTclList(); // other events don't need a textual representation (yet)

@@ -21,15 +21,15 @@ namespace openmsx::InputEventFactory {
 	auto& e = evt.key;
 
 	e.timestamp = SDL_GetTicks();
-	e.keysym = key->sym;
-	e.keysym.unused = unicode;
+	e.key = key->keycode;
+	e.reserved = unicode;
 	if (key->down) {
 		e.type = SDL_EVENT_KEY_DOWN;
-		e.state = SDL_PRESSED;
+		e.down = true;
 		return KeyDownEvent(evt);
 	} else {
 		e.type = SDL_EVENT_KEY_UP;
-		e.state = SDL_RELEASED;
+		e.down = false;
 		return KeyUpEvent(evt);
 	}
 }
@@ -113,11 +113,11 @@ namespace openmsx::InputEventFactory {
 					e.button = narrow<uint8_t>(*button);
 					if (upDown(str.getListIndex(interp, 2).getString())) {
 						e.type = SDL_EVENT_MOUSE_BUTTON_UP;
-						e.state = SDL_RELEASED;
+						e.down = false;
 						return MouseButtonUpEvent(evt);
 					} else {
 						e.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
-						e.state = SDL_PRESSED;
+						e.down = true;
 						return MouseButtonDownEvent(evt);
 					}
 				}
@@ -135,12 +135,8 @@ namespace openmsx::InputEventFactory {
 				e.type = SDL_EVENT_MOUSE_WHEEL;
 				e.timestamp = SDL_GetTicks();
 				e.direction = SDL_MOUSEWHEEL_NORMAL;
-				e.x = str.getListIndex(interp, 2).getInt(interp);
-				e.y = str.getListIndex(interp, 3).getInt(interp);
-				#if (SDL_VERSION_ATLEAST(2, 0, 18))
-					e.preciseX = narrow_cast<float>(e.x);
-					e.preciseY = narrow_cast<float>(e.y);
-				#endif
+				e.x = narrow_cast<float>(e.x);
+				e.y = narrow_cast<float>(e.y);
 				return MouseWheelEvent(evt);
 			}
 		}
@@ -219,11 +215,11 @@ namespace openmsx::InputEventFactory {
 						e.button = narrow_cast<uint8_t>(*button);
 						if (upDown(comp2.getString())) {
 							e.type = SDL_EVENT_JOYSTICK_BUTTON_UP;
-							e.state = SDL_RELEASED;
+							e.down = false;
 							return JoystickButtonUpEvent(evt);
 						} else {
 							e.type = SDL_EVENT_JOYSTICK_BUTTON_DOWN;
-							e.state = SDL_PRESSED;
+							e.down = true;
 							return JoystickButtonDownEvent(evt);
 						}
 					}
@@ -286,10 +282,9 @@ namespace openmsx::InputEventFactory {
 	evt.window = SDL_WindowEvent{};
 	auto& e = evt.window;
 
-	e.type = SDL_WINDOWEVENT;
 	e.timestamp = SDL_GetTicks();
 	e.windowID = WindowEvent::getMainWindowId();
-	e.event = gained ? SDL_EVENT_WINDOW_FOCUS_GAINED : SDL_EVENT_WINDOW_FOCUS_LOST;
+	e.type = gained ? SDL_EVENT_WINDOW_FOCUS_GAINED : SDL_EVENT_WINDOW_FOCUS_LOST;
 	return WindowEvent(evt);
 }
 
@@ -333,7 +328,7 @@ Event createInputEvent(const TclObject& str, Interpreter& interp)
 		SDL_Event evt;
 		evt.key = SDL_KeyboardEvent{};
 		evt.key.type = SDL_EVENT_KEY_UP;
-		evt.key.state = SDL_RELEASED;
+		evt.key.down = false;
 		return KeyUpEvent(evt); // dummy event, for bw compat
 		//return parseCommandEvent(str);
 	} else if (type == "OSDcontrol") {
