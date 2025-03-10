@@ -123,9 +123,9 @@ void SDLVideoSystem::updateWindowTitle()
 	screen->updateWindowTitle();
 }
 
-gl::ivec2 SDLVideoSystem::getMouseCoord()
+gl::vec2 SDLVideoSystem::getMouseCoord()
 {
-	int mouseX, mouseY;
+	float mouseX, mouseY;
 	SDL_GetMouseState(&mouseX, &mouseY);
 	return {mouseX, mouseY};
 }

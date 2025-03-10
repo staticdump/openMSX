@@ -30,7 +30,7 @@ void DummyVideoSystem::flush()
 {
 }
 
-gl::ivec2 DummyVideoSystem::getMouseCoord()
+gl::vec2 DummyVideoSystem::getMouseCoord()
 {
 	return {0, 0};
 }

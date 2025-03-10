@@ -18,7 +18,7 @@ public:
 		LaserdiscPlayer& ld) override;
 #endif
 	void flush() override;
-	[[nodiscard]] gl::ivec2 getMouseCoord() override;
+	[[nodiscard]] gl::vec2 getMouseCoord() override;
 	[[nodiscard]] OutputSurface* getOutputSurface() override;
 	void showCursor(bool show) override;
 	[[nodiscard]] bool getCursorEnabled() override;

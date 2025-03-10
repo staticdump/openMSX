@@ -65,7 +65,7 @@ public:
 
 	/** Returns the current mouse pointer coordinates.
 	  */
-	[[nodiscard]] virtual gl::ivec2 getMouseCoord() = 0;
+	[[nodiscard]] virtual gl::vec2 getMouseCoord() = 0;
 
 	/** TODO */
 	[[nodiscard]] virtual OutputSurface* getOutputSurface() = 0;
